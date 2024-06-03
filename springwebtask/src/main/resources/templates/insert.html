@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="header :: meta_header('top')">
+    <meta charset="UTF-8">
+    <title>商品登録</title>
+    <link href="css/commons.css" rel="stylesheet">
+</head>
+<body>
+
+
+    <div th:replace="header :: header"></div>
+
+<hr>
+
+<div class="insert">
+    <div class="discription">
+        <p>
+            登録情報を入力してください（<span class="required"></span>は必須です）
+        </p>
+    </div>
+
+    <div class="form-body">
+        <p class="error">エラーメッセージ</p>
+
+        <form action="/product-add" method="post" th:object="${productForm}">
+            <fieldset class="label-130">
+                <div>
+                    <label class="required">商品ID</label>
+<!--                    <input type="text" name="productId" class="base-text">-->
+                    <input type="text" th:field="*{product_id}">
+<!--                    <span class="error">エラーメッセージ</span>-->
+                    <div class="error" th:each="error: ${#fields.errors('product_id')}">
+                        [[ ${error} ]]
+                    </div>
+                </div>
+                <div>
+                    <label class="required">商品名</label>
+<!--                    <input type="text" name="name" class="base-text">-->
+                    <input type="text" th:field="*{name}">
+<!--                    <span class="error">エラーメッセージ</span>-->
+                    <div class="error" th:each="error: ${#fields.errors('name')}">
+                        [[ ${error} ]]
+                    </div>
+                </div>
+                <div>
+                    <label class="required">単価</label>
+<!--                    <input type="text" name="price" class="base-text">-->
+                    <input type="text" th:field="*{price}">
+<!--                    <span class="error">エラーメッセージ</span>-->
+                    <div class="error" th:each="error: ${#fields.errors('price')}">
+                        [[ ${error} ]]
+                    </div>
+                </div>
+                <div class="select_block">
+                    <label class="required">カテゴリ</label>
+<!--                    <select name="categoryId" class="base-text">-->
+                    <select name="category" class="base-text">
+                        <option value="1">筆記具</option>
+                        <option value="2">紙製品</option>
+                        <option value="3">事務消耗品</option>
+                        <option value="4">オフィス機器</option>
+                        <option value="5">雑貨</option>
+                    </select>
+                </div>
+                <div>
+                    <label>商品説明</label>
+<!--                    <textarea name="description" class="base-text"></textarea>-->
+                    <input type="text" th:field="*{text}">
+                </div>
+                <div>
+                    <label>画像</label>
+                    <input type="file" name="file">
+                    <span class="error">エラーメッセージ</span>
+                </div>
+            </fieldset>
+            <div class="btns">
+                <button submit="button" onclick="openModal()" class="basic-btn">登録</button>
+                <form action="/menu" method="get">
+                <input submit="button" onclick="location.href='./menu'" value="戻る" class="cancel-btn">
+                </form>
+
+            </div>
+<!--            <div id="modal">-->
+<!--                <p class="modal-message">登録しますか？</p>-->
+<!--                <div class="btns">-->
+<!--                    <button type="button" id="register-btn" class="basic-btn">登録</button>-->
+<!--                    <button type="button" onclick="closeModal()" class="cancel-btn">キャンセル</button>-->
+<!--                </div>-->
+<!--            </div>-->
+        </form>
+    </div>
+</div>
+<div id="fadeLayer"></div>
+<script src="./js/commons.js"></script>
+<script>
+    'use strict'
+    document.getElementById('register-btn').addEventListener('click', () => {
+      location.href = './menu.html'
+    })
+</script>
+</body>
+</html>
