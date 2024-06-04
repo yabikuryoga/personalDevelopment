@@ -6,8 +6,8 @@ import org.hibernate.validator.constraints.Range;
 
 @Data
 public class ProductForm {
-    @Range(min = 1,message = "商品IDは必須です")
-   private int product_id;
+    @NotEmpty(message = "商品IDは必須です")
+   private String product_id;
 
     @NotEmpty(message = "商品名は必須です")
     private String name;

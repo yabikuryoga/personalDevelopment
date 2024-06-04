@@ -1,9 +1,11 @@
 package com.example.springwebtask.Controller;
 
+import com.example.springwebtask.Entity.UpdateRecord;
 import com.example.springwebtask.Entity.User;
 import com.example.springwebtask.Form.LoginForm;
 import com.example.springwebtask.Form.ProductForm;
 import com.example.springwebtask.Form.SearchForm;
+import com.example.springwebtask.Form.UpdateForm;
 import com.example.springwebtask.Service.PgProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,13 +65,15 @@ public class ProductController {
 
     //新規登録
     @GetMapping("/product-add")
-    public String getAdd(@ModelAttribute("productForm")ProductForm productForm){
+    public String getAdd(@ModelAttribute("productForm")ProductForm productForm,Model model){
+        model.addAttribute("categories",pgProductService.categories());
         return "insert";
     }
 
     @PostMapping("/product-add")
-    public String postAdd(@Validated @ModelAttribute("productForm")ProductForm productForm,BindingResult bindingResult){
+    public String postAdd(@Validated @ModelAttribute("productForm")ProductForm productForm,BindingResult bindingResult,Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("categories",pgProductService.categories());
             return "insert";
         }
 
@@ -79,17 +83,38 @@ public class ProductController {
 
     //詳細
     @GetMapping("/date/{id}")
-    private String getUpdate(@PathVariable("id")String id,Model model){
+    private String getDetail(@PathVariable("id")String id,Model model){
         model.addAttribute("products",pgProductService.findByProductId(id));
+        model.addAttribute("categories",pgProductService.categories());
         return "productDate";
     }
 
     //削除
     @PostMapping("/delete/{product_id}")
-    public String delete(@PathVariable("product_id")String product_id, Model model){
-        model.addAttribute("delete",pgProductService.delete(product_id));
+    public String delete(@PathVariable("product_id")String product_id){
+        pgProductService.delete(product_id);
         return "redirect:/menu";
     }
 
+    //更新
+    @GetMapping("/update/{product_id}")
+    private String getUpdate(@PathVariable("product_id")String product_id,@ModelAttribute("updateForm") UpdateForm updateForm,Model model){
+        model.addAttribute("products",pgProductService.updateProductId(product_id));
+        var productList =pgProductService.updateProductId(product_id);
+        updateForm.setId(productList.id());
+        updateForm.setProduct_id(productList.product_id());
+        updateForm.setName(productList.name());
+        updateForm.setPrice(productList.price());
+        updateForm.setCategory_id(productList.category_id());
+        updateForm.setDescription(productList.description());
+        model.addAttribute("categories",pgProductService.categories());
+        return "update";
+    }
+
+    @PostMapping("/update/{product_id}")
+    private String postUpdate(@PathVariable("product_id")String product_id,@ModelAttribute("updateForm") UpdateForm updateForm){
+        var record = pgProductService.update(new UpdateRecord(updateForm.getId(),updateForm.getProduct_id(),updateForm.getCategory_id(),updateForm.getName(),updateForm.getPrice(),updateForm.getDescription()));
+        return "redirect:/menu";
+    }
 
 }

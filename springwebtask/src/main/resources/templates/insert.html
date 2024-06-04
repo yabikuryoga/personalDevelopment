@@ -53,13 +53,11 @@
                 </div>
                 <div class="select_block">
                     <label class="required">カテゴリ</label>
-<!--                    <select name="categoryId" class="base-text">-->
+
                     <select name="category" class="base-text">
-                        <option value="1">筆記具</option>
-                        <option value="2">紙製品</option>
-                        <option value="3">事務消耗品</option>
-                        <option value="4">オフィス機器</option>
-                        <option value="5">雑貨</option>
+
+                        <option th:each="categorie : ${categories}" th:text="${categorie.name}" th:value="${categorie.id}"></option>
+
                     </select>
                 </div>
                 <div>
@@ -76,17 +74,17 @@
             <div class="btns">
                 <button submit="button" onclick="openModal()" class="basic-btn">登録</button>
                 <form action="/menu" method="get">
-                <input submit="button" onclick="location.href='./menu'" value="戻る" class="cancel-btn">
+                <input type="button" onclick="location.href='./menu'" value="戻る" class="cancel-btn">
                 </form>
 
             </div>
-<!--            <div id="modal">-->
-<!--                <p class="modal-message">登録しますか？</p>-->
-<!--                <div class="btns">-->
-<!--                    <button type="button" id="register-btn" class="basic-btn">登録</button>-->
-<!--                    <button type="button" onclick="closeModal()" class="cancel-btn">キャンセル</button>-->
-<!--                </div>-->
-<!--            </div>-->
+            <div id="modal">
+                <p class="modal-message">登録しますか？</p>
+                <div class="btns">
+                    <button type="button" id="register-btn" class="basic-btn">登録</button>
+                    <button type="button" onclick="closeModal()" class="cancel-btn">キャンセル</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>

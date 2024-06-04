@@ -1,9 +1,7 @@
 package com.example.springwebtask.Service;
 
 import com.example.springwebtask.Dao.PgProductDao;
-import com.example.springwebtask.Entity.ProductDate;
-import com.example.springwebtask.Entity.ProductRecord;
-import com.example.springwebtask.Entity.UsersRecord;
+import com.example.springwebtask.Entity.*;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class PgProductService implements ProductService{
 
     //追加
     @Override
-    public int insert(int product_id,int category_id,String name,int price,String description){
+    public int insert(String product_id,int category_id,String name,int price,String description){
         return productDao.insert(product_id,category_id,name,price,description);
     }
 
@@ -46,4 +44,15 @@ public class PgProductService implements ProductService{
     //削除
     @Override
     public int delete (String product_id){return productDao.delete(product_id);}
+
+    //カテゴリ
+    @Override
+    public List<categoriesRecord>categories(){return productDao.categories();}
+
+    //更新
+    @Override
+    public int update(UpdateRecord updateRecord){return productDao.update(updateRecord);}
+
+    @Override
+    public UpdateRecord updateProductId(String product_id){return productDao.updateProductId(product_id);}
 }

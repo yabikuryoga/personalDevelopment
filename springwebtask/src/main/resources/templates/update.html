@@ -15,36 +15,38 @@
     <div class="form-body">
         <p class="error">エラーメッセージ</p>
 
-        <form action="menu.html" method="get">
+        <form th:action="'/update/'+${products.product_id}" method="post" th:object="${updateForm}">
             <fieldset class="label-130">
+                <input type="hidden" th:field="*{id}">
                 <div>
                     <label>商品ID</label>
-                    <input type="text" name="productId" value="10001" class="base-text">
+                    <input type="text" th:field="*{product_id}" name="productId" class="base-text">
                     <span class="error">エラーメッセージ</span>
                 </div>
                 <div>
                     <label>商品名</label>
-                    <input type="text" name="name" value="マッキー(黒)" class="base-text">
+                    <input type="text" th:field="*{name}" name="name" class="base-text">
                     <span class="error">エラーメッセージ</span>
                 </div>
                 <div>
                     <label>単価</label>
-                    <input type="text" name="price" value="165" class="base-text">
+                    <input type="text" th:field="*{price}" name="price" class="base-text">
                     <span class="error">エラーメッセージ</span>
                 </div>
                 <div>
-                    <label>カテゴリ</label> <select name="categoryId" class="base-text">
-                    <option value="1" selected>ペン</option>
-                    <option value="2">ノート</option>
-                    <option value="3">消しゴム</option>
-                    <option value="4">のり</option>
+                    <label>カテゴリ</label>
+                    <select name="categoryId" th:field="*{category_id}" class="base-text">
+
+                    <option th:each="categorie : ${categories}" th:text="${categorie.name}" th:value="${categorie.id}"  th:selected="${ products.category_id == categorie.id}"></option>
+
                 </select>
                 </div>
                 <div>
                     <label>商品説明</label>
-                    <textarea name="description" class="base-text">
-ゼブラ株式会社
-線の太さ：太6.0mm、細1.5～2.0mm
+<!--                    <textarea name="description" th:field="${products.description}" class="base-text">-->
+
+                    <textarea name="description" th:field="*{description}" th:value="${products.description}" class="base-text">
+
             </textarea>
                 </div>
                 <div>
@@ -54,19 +56,16 @@
                 </div>
             </fieldset>
             <div class="btns">
-                <button type="button" onclick="openModal()" class="basic-btn">更新</button>
-                <input type="button" onclick="location.href='./menu.html'" value="メニューに戻る" class="cancel-btn">
-            </div>
-            <div id="modal">
-                <p class="modal-message">更新しますか？</p>
-                <div class="btns">
-                    <button type="button" id="update-btn" class="basic-btn">更新</button>
-                    <button type="button" onclick="closeModal()" class="cancel-btn">キャンセル</button>
-                </div>
+
+
+                <button submit="button" class="basic-btn">更新</button>
+
+                <input type="button" onclick="location.href='/menu'" value="メニューに戻る" class="cancel-btn">
             </div>
         </form>
     </div>
 </div>
+
 <div id="fadeLayer"></div>
 <script src="./js/commons.js"></script>
 <script>
