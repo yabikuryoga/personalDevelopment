@@ -13,11 +13,15 @@
 
 <div class="insert">
     <div class="form-body">
-        <p class="error">エラーメッセージ</p>
+        <p class="error">[[${error}]]</p>
 
         <form th:action="'/update/'+${products.product_id}" method="post" th:object="${updateForm}">
             <fieldset class="label-130">
+
                 <input type="hidden" th:field="*{id}">
+
+                <input type="hidden" th:field="*{keep}">
+
                 <div>
                     <label>商品ID</label>
                     <input type="text" th:field="*{product_id}" name="productId" class="base-text">

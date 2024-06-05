@@ -9,6 +9,7 @@ import com.example.springwebtask.Form.UpdateForm;
 import com.example.springwebtask.Service.PgProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,10 +26,10 @@ public class ProductController {
     private HttpSession session;
 
     //ログイン
-    @GetMapping("login")
+    @GetMapping("/login")
     public String getLogin(@ModelAttribute("loginForm")LoginForm loginForm){return "index";}
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public String postLogin(@Validated @ModelAttribute("loginForm")LoginForm loginForm, BindingResult bindingResult,Model model){
         if (bindingResult.hasErrors()) {
             return "index";
@@ -107,14 +108,43 @@ public class ProductController {
         updateForm.setPrice(productList.price());
         updateForm.setCategory_id(productList.category_id());
         updateForm.setDescription(productList.description());
+
+        updateForm.setKeep(productList.product_id());
+
         model.addAttribute("categories",pgProductService.categories());
         return "update";
     }
 
     @PostMapping("/update/{product_id}")
-    private String postUpdate(@PathVariable("product_id")String product_id,@ModelAttribute("updateForm") UpdateForm updateForm){
-        var record = pgProductService.update(new UpdateRecord(updateForm.getId(),updateForm.getProduct_id(),updateForm.getCategory_id(),updateForm.getName(),updateForm.getPrice(),updateForm.getDescription()));
+    private String postUpdate(@PathVariable("product_id")String product_id,@ModelAttribute("updateForm") UpdateForm updateForm,Model model){
+       try {
+           var record = pgProductService.update(new UpdateRecord(updateForm.getId(),updateForm.getProduct_id(),updateForm.getCategory_id(),updateForm.getName(),updateForm.getPrice(),updateForm.getDescription()));
+       }catch (DuplicateKeyException e){
+           model.addAttribute("products",pgProductService.updateProductId(updateForm.getKeep()));
+           var productList =pgProductService.updateProductId(updateForm.getKeep());
+           updateForm.setId(productList.id());
+           updateForm.setProduct_id(productList.product_id());
+           updateForm.setName(productList.name());
+           updateForm.setPrice(productList.price());
+           updateForm.setCategory_id(productList.category_id());
+           updateForm.setDescription(productList.description());
+
+           updateForm.setKeep(productList.product_id());
+
+           model.addAttribute("categories",pgProductService.categories());
+
+           model.addAttribute("error","ざんねーん");
+
+           return "update";
+       }
         return "redirect:/menu";
+    }
+
+    //ログアウト
+    @PostMapping("/logout")
+    public String logout(@ModelAttribute("loginForm") LoginForm loginForm) {
+        session.invalidate();
+        return "redirect:/login";
     }
 
 }

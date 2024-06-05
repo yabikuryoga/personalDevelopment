@@ -10,4 +10,6 @@ public class UpdateForm {
     private int price;
     private int category_id;
     private String description;
+
+    private String keep;
 }
