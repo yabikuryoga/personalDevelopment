@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>商品登録</title>
     <link href="css/commons.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -20,36 +21,37 @@
     </div>
 
     <div class="form-body">
-        <p class="error">エラーメッセージ</p>
+        <p class="error">[[${error}]]</p>
 
         <form action="/product-add" method="post" th:object="${productForm}">
             <fieldset class="label-130">
                 <div>
                     <label class="required">商品ID</label>
-<!--                    <input type="text" name="productId" class="base-text">-->
+
                     <input type="text" th:field="*{product_id}">
-<!--                    <span class="error">エラーメッセージ</span>-->
-                    <div class="error" th:each="error: ${#fields.errors('product_id')}">
+
+                    <span class="error" th:each="error: ${#fields.errors('product_id')}">
                         [[ ${error} ]]
-                    </div>
+                    </span>
+
                 </div>
                 <div>
                     <label class="required">商品名</label>
 <!--                    <input type="text" name="name" class="base-text">-->
                     <input type="text" th:field="*{name}">
 <!--                    <span class="error">エラーメッセージ</span>-->
-                    <div class="error" th:each="error: ${#fields.errors('name')}">
+                    <span class="error" th:each="error: ${#fields.errors('name')}">
                         [[ ${error} ]]
-                    </div>
+                    </span>
                 </div>
                 <div>
                     <label class="required">単価</label>
 <!--                    <input type="text" name="price" class="base-text">-->
                     <input type="text" th:field="*{price}">
 <!--                    <span class="error">エラーメッセージ</span>-->
-                    <div class="error" th:each="error: ${#fields.errors('price')}">
+                    <span class="error" th:each="error: ${#fields.errors('price')}">
                         [[ ${error} ]]
-                    </div>
+                    </span>
                 </div>
                 <div class="select_block">
                     <label class="required">カテゴリ</label>
@@ -63,7 +65,7 @@
                 <div>
                     <label>商品説明</label>
 <!--                    <textarea name="description" class="base-text"></textarea>-->
-                    <input type="text" th:field="*{text}">
+                    <textarea type="text" th:field="*{text}"></textarea>
                 </div>
                 <div>
                     <label>画像</label>
@@ -72,16 +74,18 @@
                 </div>
             </fieldset>
             <div class="btns">
-                <button submit="button" onclick="openModal()" class="basic-btn">登録</button>
-                <form action="/menu" method="get">
+
+                <button type="button" onclick="openModal()" class="basic-btn">登録</button>
+
+
                 <input type="button" onclick="location.href='./menu'" value="戻る" class="cancel-btn">
-                </form>
+
 
             </div>
             <div id="modal">
                 <p class="modal-message">登録しますか？</p>
                 <div class="btns">
-                    <button type="button" id="register-btn" class="basic-btn">登録</button>
+                    <button submit="button" class="basic-btn">登録</button>
                     <button type="button" onclick="closeModal()" class="cancel-btn">キャンセル</button>
                 </div>
             </div>
@@ -89,12 +93,7 @@
     </div>
 </div>
 <div id="fadeLayer"></div>
-<script src="./js/commons.js"></script>
-<script>
-    'use strict'
-    document.getElementById('register-btn').addEventListener('click', () => {
-      location.href = './menu.html'
-    })
-</script>
+    <script src="js/commons.js"></script>
+
 </body>
 </html>

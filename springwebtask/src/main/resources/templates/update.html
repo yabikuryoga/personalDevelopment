@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
+<head th:replace="header :: meta_header('top')">
+
     <meta charset="UTF-8">
     <title>更新</title>
 <!--    <link href="css/commons.css" rel="stylesheet">-->
@@ -14,8 +15,8 @@
 <div class="insert">
     <div class="form-body">
         <p class="error">[[${error}]]</p>
-
-        <form th:action="'/update/'+${products.product_id}" method="post" th:object="${updateForm}">
+<!--        products.product_id-->
+        <form th:action="'/update/'+${keep}" method="post" th:object="${updateForm}">
             <fieldset class="label-130">
 
                 <input type="hidden" th:field="*{id}">
@@ -25,31 +26,38 @@
                 <div>
                     <label>商品ID</label>
                     <input type="text" th:field="*{product_id}" name="productId" class="base-text">
-                    <span class="error">エラーメッセージ</span>
+                    <span class="error" th:each="error: ${#fields.errors('product_id')}">
+                        [[ ${error} ]]
+                    </span>
                 </div>
                 <div>
                     <label>商品名</label>
                     <input type="text" th:field="*{name}" name="name" class="base-text">
-                    <span class="error">エラーメッセージ</span>
+
+                    <span class="error" th:each="error: ${#fields.errors('name')}">
+                        [[ ${error} ]]
+                    </span>
+
                 </div>
                 <div>
                     <label>単価</label>
                     <input type="text" th:field="*{price}" name="price" class="base-text">
-                    <span class="error">エラーメッセージ</span>
+                    <span class="error" th:each="error: ${#fields.errors('price')}">
+                        [[ ${error} ]]
+                    </span>
                 </div>
                 <div>
                     <label>カテゴリ</label>
                     <select name="categoryId" th:field="*{category_id}" class="base-text">
 
-                    <option th:each="categorie : ${categories}" th:text="${categorie.name}" th:value="${categorie.id}"  th:selected="${ products.category_id == categorie.id}"></option>
+                    <option th:each="categorie : ${categories}" th:text="${categorie.name}" th:value="${categorie.id}"  th:selected="${category_id == categorie.id}"></option>
 
                 </select>
                 </div>
                 <div>
                     <label>商品説明</label>
-<!--                    <textarea name="description" th:field="${products.description}" class="base-text">-->
 
-                    <textarea name="description" th:field="*{description}" th:value="${products.description}" class="base-text">
+                    <textarea name="description" th:field="*{description}" th:value="${description}" class="base-text">
 
             </textarea>
                 </div>
@@ -62,21 +70,25 @@
             <div class="btns">
 
 
-                <button submit="button" class="basic-btn">更新</button>
+                <button type="button" onclick="openModal()" class="basic-btn">更新</button>
 
                 <input type="button" onclick="location.href='/menu'" value="メニューに戻る" class="cancel-btn">
             </div>
+
+            <div id="modal">
+                <p class="modal-message">更新しますか？</p>
+                <div class="btns">
+                    <button submit="button" id="update-btn" class="basic-btn">更新</button>
+                    <button type="button" onclick="closeModal()" class="cancel-btn">キャンセル</button>
+                </div>
+            </div>
+
         </form>
     </div>
 </div>
 
 <div id="fadeLayer"></div>
 <script src="./js/commons.js"></script>
-<script>
-    'use strict'
-    document.getElementById('update-btn').addEventListener('click', () => {
-      location.href = './menu.html'
-    })
-</script>
+
 </body>
 </html>

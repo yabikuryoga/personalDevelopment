@@ -9,6 +9,7 @@ import com.example.springwebtask.Form.UpdateForm;
 import com.example.springwebtask.Service.PgProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +54,11 @@ public class ProductController {
     //検索
     @GetMapping("/menu")
     public String getSearch(Model model){
+        var session = (User)this.session.getAttribute("sessionUser");
+        if (session == null){
+            return "redirect:/login";
+        }
+
         model.addAttribute("search",pgProductService.listAll());
         return "menu";
     }
@@ -67,6 +73,11 @@ public class ProductController {
     //新規登録
     @GetMapping("/product-add")
     public String getAdd(@ModelAttribute("productForm")ProductForm productForm,Model model){
+        var session = (User)this.session.getAttribute("sessionUser");
+        if (session == null){
+            return "redirect:/login";
+        }
+
         model.addAttribute("categories",pgProductService.categories());
         return "insert";
     }
@@ -78,28 +89,58 @@ public class ProductController {
             return "insert";
         }
 
-        pgProductService.insert(productForm.getProduct_id(),productForm.getCategory(),productForm.getName(),productForm.getPrice(),productForm.getText());
-        return "redirect:/product-add";
+        try {
+            pgProductService.insert(productForm.getProduct_id(),productForm.getCategory(),productForm.getName(),productForm.getPrice(),productForm.getText());
+        }catch (DuplicateKeyException e){
+            model.addAttribute("error","商品コードが重複しています");
+            return "insert";
+        }
+        model.addAttribute("completion","登録に成功しました");
+        return "success";
     }
 
     //詳細
     @GetMapping("/date/{id}")
     private String getDetail(@PathVariable("id")String id,Model model){
-        model.addAttribute("products",pgProductService.findByProductId(id));
-        model.addAttribute("categories",pgProductService.categories());
-        return "productDate";
+        var session = (User)this.session.getAttribute("sessionUser");
+        if (session == null){
+            return "redirect:/login";
+        }
+
+        var product = pgProductService.updateProductId(id);
+        model.addAttribute("products",product);
+        var categories = pgProductService.categories();
+        var categoryName = "";
+        for(var category : categories ){
+            if(category.id() == product.category_id()){
+                categoryName = category.name();
+            }
+        }
+        model.addAttribute("categories",categoryName);
+        return "detail";
     }
 
     //削除
     @PostMapping("/delete/{product_id}")
-    public String delete(@PathVariable("product_id")String product_id){
-        pgProductService.delete(product_id);
-        return "redirect:/menu";
+    public String delete(@PathVariable("product_id")String product_id,Model model){
+        try {
+            pgProductService.delete(product_id);
+        }catch (DataAccessException e){
+            model.addAttribute("error","削除に失敗しました");
+            return "detail";
+        }
+        model.addAttribute("completion","削除に成功しました");
+        return "success";
     }
 
     //更新
     @GetMapping("/update/{product_id}")
     private String getUpdate(@PathVariable("product_id")String product_id,@ModelAttribute("updateForm") UpdateForm updateForm,Model model){
+        var session = (User)this.session.getAttribute("sessionUser");
+        if (session == null){
+            return "redirect:/login";
+        }
+
         model.addAttribute("products",pgProductService.updateProductId(product_id));
         var productList =pgProductService.updateProductId(product_id);
         updateForm.setId(productList.id());
@@ -116,11 +157,16 @@ public class ProductController {
     }
 
     @PostMapping("/update/{product_id}")
-    private String postUpdate(@PathVariable("product_id")String product_id,@ModelAttribute("updateForm") UpdateForm updateForm,Model model){
-       try {
+    private String postUpdate(@Validated @ModelAttribute("updateForm") UpdateForm updateForm ,BindingResult bindingResult,@PathVariable("product_id")String product_id,Model model){
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("categories",pgProductService.categories());
+            return "update";
+        }
+
+        try {
            var record = pgProductService.update(new UpdateRecord(updateForm.getId(),updateForm.getProduct_id(),updateForm.getCategory_id(),updateForm.getName(),updateForm.getPrice(),updateForm.getDescription()));
        }catch (DuplicateKeyException e){
-           model.addAttribute("products",pgProductService.updateProductId(updateForm.getKeep()));
+//           model.addAttribute("products",pgProductService.updateProductId(updateForm.getKeep()));
            var productList =pgProductService.updateProductId(updateForm.getKeep());
            updateForm.setId(productList.id());
            updateForm.setProduct_id(productList.product_id());
@@ -133,18 +179,20 @@ public class ProductController {
 
            model.addAttribute("categories",pgProductService.categories());
 
-           model.addAttribute("error","ざんねーん");
+           model.addAttribute("error","商品コードが重複しています");
 
            return "update";
        }
-        return "redirect:/menu";
+        model.addAttribute("completion","更新に成功しました");
+        return "success";
     }
 
     //ログアウト
     @PostMapping("/logout")
     public String logout(@ModelAttribute("loginForm") LoginForm loginForm) {
         session.invalidate();
-        return "redirect:/login";
+        return "logout";
     }
+
 
 }

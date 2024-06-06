@@ -2,11 +2,12 @@ package com.example.springwebtask.Form;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import lombok.NonNull;
 import org.hibernate.validator.constraints.Range;
 
 @Data
 public class ProductForm {
-    @NotEmpty(message = "商品IDは必須です")
+   @NotEmpty(message = "商品IDは必須です")
    private String product_id;
 
     @NotEmpty(message = "商品名は必須です")
