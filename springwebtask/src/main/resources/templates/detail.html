@@ -13,7 +13,8 @@
 <div class="update">
     <div class="form-body">
         <div class="img_block">
-            <img src="images/マッキー.png" class="product-img"><br>
+            <img th:src="'/images/'+ ${products.image_path}" class="product-img"><br>
+<!--            <img src="'images" class="product-img"><br>-->
         </div>
         <form th:action="'/delete/'+${products.product_id}" method="post">
             <fieldset class="label-130 product_block">
@@ -43,14 +44,16 @@
                 </div>
             </fieldset>
             <div>
+
                 <div class="btns">
-<!--                    <input type="button" onclick="openModal()" value="削除" class="basic-btn">-->
+                    <th:block th:if="${session.sessionUser.role eq 1}">
                     <button type="button" onclick="openModal()" class="basic-btn">削除</button>
-<!--                    <input type="button" onclick="location.href='./updateInput.html'" value="編集" class="basic-btn">-->
+
                     <button type="button" class="basic-btn">
                         <a th:href="'/update/'+${products.product_id}">編集</a>
                     </button>
-<!--                    <input type="button" onclick="location.href='./menu.html'" value="戻る" class="cancel-btn">-->
+                </th:block>
+
                     <input type="button" onclick="location.href='/menu'" value="メニューに戻る" class="cancel-btn">
                 </div>
                 <div id="modal">

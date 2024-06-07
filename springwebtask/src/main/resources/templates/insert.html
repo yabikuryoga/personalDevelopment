@@ -28,7 +28,7 @@
                 <div>
                     <label class="required">商品ID</label>
 
-                    <input type="text" th:field="*{product_id}">
+                    <input type="text" th:field="*{product_id}" class="base-text">
 
                     <span class="error" th:each="error: ${#fields.errors('product_id')}">
                         [[ ${error} ]]
@@ -38,7 +38,7 @@
                 <div>
                     <label class="required">商品名</label>
 <!--                    <input type="text" name="name" class="base-text">-->
-                    <input type="text" th:field="*{name}">
+                    <input type="text" th:field="*{name}" class="base-text">
 <!--                    <span class="error">エラーメッセージ</span>-->
                     <span class="error" th:each="error: ${#fields.errors('name')}">
                         [[ ${error} ]]
@@ -47,7 +47,7 @@
                 <div>
                     <label class="required">単価</label>
 <!--                    <input type="text" name="price" class="base-text">-->
-                    <input type="text" th:field="*{price}">
+                    <input type="text" th:field="*{price}" class="base-text">
 <!--                    <span class="error">エラーメッセージ</span>-->
                     <span class="error" th:each="error: ${#fields.errors('price')}">
                         [[ ${error} ]]
@@ -65,7 +65,7 @@
                 <div>
                     <label>商品説明</label>
 <!--                    <textarea name="description" class="base-text"></textarea>-->
-                    <textarea type="text" th:field="*{text}"></textarea>
+                    <textarea type="text" th:field="*{text}" class="base-text"></textarea>
                 </div>
                 <div>
                     <label>画像</label>

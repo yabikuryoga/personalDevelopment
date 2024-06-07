@@ -13,11 +13,12 @@
 
     <div class="btn-area">
 <!--        新規登録ボタン-->
-        <div class="btn"><a class="basic-btn regist" href="/product-add">新規登録</a></div>
-
+        <th:block th:if="${session.sessionUser.role eq 1}">
+            <div class="btn"><a class="basic-btn regist" href="/product-add">新規登録</a></div>
+        </th:block>
         <div class="btn"><a class="basic-btn regist" href="category.html">カテゴリ管理</a></div>
     </div>
-    <p>成功メッセージ</p>
+<!--    <p>成功メッセージ</p>-->
     <form method="post" action="/menu" class="search-form">
         <div class="order">
             <select name="order" class="base-text">

@@ -1,6 +1,7 @@
 package com.example.springwebtask.Form;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Range;
@@ -16,7 +17,8 @@ public class UpdateForm {
     private String name;
 
     @Range(min = 1,message = "単価は必須です")
-    private int price;
+    @NotNull(message = "単価は必須です")
+    private Integer price;
 
     @Range(min = 1,message = "カテゴリは必須です")
     private int category_id;
@@ -24,4 +26,6 @@ public class UpdateForm {
     private String description;
 
     private String keep;
+
+    private String image_path;
 }

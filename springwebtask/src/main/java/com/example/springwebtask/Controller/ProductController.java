@@ -43,7 +43,7 @@ public class ProductController {
         }
 
         if (loginForm.getPass().equals(user.password())){
-            var sessionUser = new User(user.id(),user.login_id(),user.password(),user.name());
+            var sessionUser = new User(user.id(),user.login_id(),user.password(),user.name(),user.role());
             session.setAttribute("sessionUser", sessionUser);
             return "redirect:/menu";
         }
@@ -149,6 +149,7 @@ public class ProductController {
         updateForm.setPrice(productList.price());
         updateForm.setCategory_id(productList.category_id());
         updateForm.setDescription(productList.description());
+        updateForm.setImage_path(productList.image_path());
 
         updateForm.setKeep(productList.product_id());
 
@@ -164,9 +165,8 @@ public class ProductController {
         }
 
         try {
-           var record = pgProductService.update(new UpdateRecord(updateForm.getId(),updateForm.getProduct_id(),updateForm.getCategory_id(),updateForm.getName(),updateForm.getPrice(),updateForm.getDescription()));
+           var record = pgProductService.update(new UpdateRecord(updateForm.getId(),updateForm.getProduct_id(),updateForm.getCategory_id(),updateForm.getName(),updateForm.getPrice(),updateForm.getDescription(),updateForm.getImage_path()));
        }catch (DuplicateKeyException e){
-//           model.addAttribute("products",pgProductService.updateProductId(updateForm.getKeep()));
            var productList =pgProductService.updateProductId(updateForm.getKeep());
            updateForm.setId(productList.id());
            updateForm.setProduct_id(productList.product_id());
@@ -174,6 +174,7 @@ public class ProductController {
            updateForm.setPrice(productList.price());
            updateForm.setCategory_id(productList.category_id());
            updateForm.setDescription(productList.description());
+            updateForm.setImage_path(productList.image_path());
 
            updateForm.setKeep(productList.product_id());
 
@@ -182,7 +183,10 @@ public class ProductController {
            model.addAttribute("error","商品コードが重複しています");
 
            return "update";
-       }
+       }catch (DataAccessException e){
+            model.addAttribute("error","更新時にエラーが発生しました");
+            return "update";
+        }
         model.addAttribute("completion","更新に成功しました");
         return "success";
     }
@@ -193,6 +197,7 @@ public class ProductController {
         session.invalidate();
         return "logout";
     }
+
 
 
 }
